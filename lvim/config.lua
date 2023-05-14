@@ -11,7 +11,7 @@ an executable
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save.enabled = false
-lvim.colorscheme = "gruvbox-material"
+lvim.colorscheme = "onedarkhc"
 -- lvim.builtin.lualine.options.theme = "gruvbox"
 vim.opt.tabstop = 4                     -- tab space
 vim.cmd [[
