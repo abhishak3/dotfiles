@@ -11,7 +11,7 @@ an executable
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save.enabled = false
-lvim.colorscheme = "onedarkhc"
+lvim.colorscheme = "pop-punk"
 -- lvim.builtin.lualine.options.theme = "gruvbox"
 vim.opt.tabstop = 4                     -- tab space
 vim.cmd [[
@@ -220,7 +220,7 @@ lvim.plugins = {
   {"sainnhe/gruvbox-material"},
   {"folke/trouble.nvim", cmd = "TroubleToggle"},
   {"godlygeek/tabular"},
-  {"preservim/vim-markdown"}
+  {"preservim/vim-markdown"},
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
