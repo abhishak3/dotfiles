@@ -36,7 +36,7 @@ vim.cmd [[
     \}
 ]]
 
--- lvim.transparent_window = true -- transparency opacity
+lvim.transparent_window = true -- transparency opacity
 
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
