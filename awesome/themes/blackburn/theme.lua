@@ -15,16 +15,13 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/blackburn"
--- theme.wallpaper                               = theme.dir .. "/wall.png"
 theme.wallpaper                                 = "/home/shaker/Pictures/dracula/astronaut.png"
 theme.font                                      = "CaskaydiaCove Nerd Font 11"
 theme.taglist_font                              = "JetBrains Mono 11"
 theme.fg_normal                                 = "#D7D7D7"
--- theme.fg_focus                                  = "#F28F79"
 theme.fg_focus                                  = "#FF6859"
 theme.bg_normal                                 = "#00010D"
 theme.bg_focus                                  = "#112827"
--- theme.bg_focus                               = "#3c3836"
 theme.fg_urgent                                 = "#CC9393"
 theme.bg_urgent                                 = "#2A1F1E"
 theme.border_width                              = dpi(1)
@@ -76,10 +73,17 @@ theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/
 theme.titlebar_minimize_button_focus            = theme.dir .. "/icons/titlebar/minimize_focus.png"
 theme.titlebar_minimize_button_normal           = theme.dir .. "/icons/titlebar/minimize_normal.png"
 theme.corner_radius                             = 10
-theme.battery_widget                            = "#006692"
-theme.wifi_widget                               = "#04BFAD"
-theme.volume_bg                                 = "#F25050"
-theme.clock_bg                                  = "#8C3030"
+theme.opacity                                   = "00"
+theme.battery_widget                            = "#006692" .. theme.opacity
+theme.wifi_widget                               = "#04BFAD" .. theme.opacity
+theme.volume_bg                                 = "#F25050" .. theme.opacity
+theme.clock_bg                                  = "#8C3030" .. theme.opacity
+theme.battery_critical                          = "#FF7064"
+theme.battery_charging                          = "#FDD69D"
+theme.battery_normal                            = "#04D9B2"
+theme.wifi_widget_text                          = "#038C7F"
+theme.volume_text                               = "#F25050"
+theme.clock_text                                = "#EFF2EB"
 theme.logo_bg                                   = theme.bg_focus
 
 awful.util.tagnames = { " ", " ", " ", " ", " " }
@@ -88,6 +92,7 @@ local markup     = lain.util.markup
 local separators = lain.util.separators
 local gray       = "#9E9C9A"
 
+-- adds left separator to widgets
 function separator_left(bgcolor, fgcolor)
   return wibox.widget {
     {
@@ -100,6 +105,7 @@ function separator_left(bgcolor, fgcolor)
   }
 end
 
+-- adds right separator to widgets
 function separator_right(bgcolor, fgcolor)
   return wibox.widget {
     {
@@ -112,16 +118,27 @@ function separator_right(bgcolor, fgcolor)
   }
 end
 
+-- adds bottom margin to widgets
+function bottom_margin(widget, margin_color)
+  return wibox.widget {
+    widget,
+    bottom=2,
+    color=margin_color,
+    widget=wibox.container.margin
+  }
+end
+
 -- Textclock
 local clock_arrow_left = separator_left(theme.volume_bg, theme.clock_bg)
 local mytextclock = wibox.widget {
   {
-    format = "<span foreground='" .. "#F6FCF2" .. "' font='Monoid Bold 10'> %H:%M </span>",
+    format = "<span foreground='" .. theme.clock_text .. "' font='Monoid Bold 10'> %H:%M </span>",
     widget = wibox.widget.textclock,
   },
   bg = theme.clock_bg,
   widget = wibox.container.background
 }
+mytextclock = bottom_margin(mytextclock, theme.clock_text)
 
 -- Calendar
 theme.cal = lain.widget.cal({
@@ -132,43 +149,6 @@ theme.cal = lain.widget.cal({
     bg   = theme.bg_normal
   }
 })
-
--- MPD
-theme.mpd = lain.widget.mpd({
-  settings = function()
-    mpd_notification_preset.fg = white
-    artist                     = mpd_now.artist .. " "
-    title                      = mpd_now.title .. " "
-
-    if mpd_now.state == "pause" then
-      artist = "mpd "
-      title  = "paused "
-    elseif mpd_now.state == "stop" then
-      artist = ""
-      title  = ""
-    end
-
-    widget:set_markup(markup.font(theme.font, markup(gray, artist) .. title .. " "))
-  end
-})
-
--- /home fs
---[[ commented because it needs Gio/Glib >= 2.54
-theme.fs = lain.widget.fs({
-    notification_preset = { fg = white, bg = theme.bg_normal, font = "Terminus 10.5" },
-    settings  = function()
-        fs_header = ""
-        fs_p      = ""
-
-        if fs_now["/home"].percentage >= 90 then
-            fs_header = " Hdd "
-            fs_p      = fs_now["/home"].percentage
-        end
-
-        widget:set_markup(markup.font(theme.font, markup(gray, fs_header) .. fs_p))
-    end
-})
---]]
 
 -- Battery
 local bat = lain.widget.bat({
@@ -181,7 +161,6 @@ local bat = lain.widget.bat({
 
 -- ALSA volume
 theme.volume = lain.widget.alsa({
-  --togglechannel = "IEC958,3",
   settings = function()
     header = " "
     vlevel = volume_now.level
@@ -191,11 +170,11 @@ theme.volume = lain.widget.alsa({
     else
       vlevel = " " .. vlevel .. " "
     end
-
-    widget:set_markup(markup.font(theme.font, markup(gray, header) .. markup("#000", vlevel)))
+    widget:set_markup(markup.font(theme.font, markup(gray, header) .. markup(theme.volume_text, vlevel)))
   end
 })
-
+local volume_widget = wibox.container.background(theme.volume.widget, theme.volume_bg);
+volume_widget = bottom_margin(volume_widget, theme.volume_text)
 
 -- Separators
 local first     = wibox.widget.textbox('<span font="FiraCode Nerd Font 10"> </span>')
@@ -215,14 +194,7 @@ local try_arch = wibox.widget {
   layout = wibox.layout.fixed.horizontal
 }
 
--- For Gradient Only
--- local barcolor    = gears.color({
---   type  = "linear",
---   from  = { barheight, 0 },
---   to    = { barheight, barheight },
---   stops = { { 0, theme.bg_focus }, { 0.8, theme.bg_focus }, { 1, theme.bg_focus } } -- gradient
--- })
-local barcolor    = theme.bg_normal
+local barcolor    = theme.bg_normal .. theme.opacity
 local barheight   = dpi(18)
 theme.titlebar_bg = barcolor
 
@@ -267,18 +239,8 @@ function theme.at_screen_connect(s)
     style           = {
       fg_focus = theme.bg_focus,
       bg_focus = theme.fg_focus,
-      -- shape = gears.shape.powerline,
       font = "Font Awesome 6 Free",
     },
-    -- layout          = {
-    --   spacing        = -12,
-    --   spacing_widget = {
-    --     color  = '#fff',
-    --     shape  = gears.shape.powerline,
-    --     widget = wibox.widget.separator,
-    --   },
-    --   layout         = wibox.layout.fixed.horizontal
-    -- },
     widget_template = {
       {
         {
@@ -299,21 +261,13 @@ function theme.at_screen_connect(s)
   }
 
   -- Create a tasklist widget
-
-  -- s.mytasklist = awful.widget.tasklist(
-  --   s,
-  --   awful.widget.tasklist.filter.currenttags,
-  --   awful.util.tasklist_buttons,
-  --   { bg_normal = barcolor, bg_focus = theme.bg_normal, shape = gears.shape.rounded_bar}
-  -- )
-
   s.mytasklist = awful.widget.tasklist {
     screen          = s,
     filter          = awful.widget.tasklist.filter.currenttags,
     buttons         = awful.util.tasklist_buttons,
     style           = {
-      bg_focus           = theme.bg_focus,
-      bg_normal          = theme.back,
+      bg_focus           = theme.bg_focus .. theme.opacity,
+      bg_normal          = theme.bg_normal .. theme.opacity,
       fg_focus           = theme.fg_focus,
       fg_normal          = theme.fg_normal,
       shape_border_width = 1,
@@ -321,7 +275,7 @@ function theme.at_screen_connect(s)
       shape              = gears.shape.rounded_bar,
     },
     layout          = {
-      spacing        = 10,
+      spacing        = 20,
       spacing_widget = {
         {
           forced_width = 5,
@@ -365,7 +319,7 @@ function theme.at_screen_connect(s)
     position = "top",
     screen = s,
     height = dpi(25),
-    bg = barcolor .. "00";
+    bg = barcolor .. theme.opacity;
   })
 
   -- powerline arrow widget
@@ -375,33 +329,36 @@ function theme.at_screen_connect(s)
 
   -- Wifi Widget
   local wifi_text = wibox.widget.textbox()
-  vicious.register(wifi_text, vicious.widgets.wifi,
-    '<span color="' .. "#000" .. '">  ${ssid} ${linp}% </span>', 2, "wlo1")
+  local wifi_widget = wibox.container.background(wifi_text, theme.wifi_widget)
+  wifi_widget = bottom_margin(wifi_widget, theme.wifi_widget_text)
 
-  local wifi_widget = wibox.widget {
-    wibox.container.background(wifi_text, theme.wifi_widget),
-    layout = wibox.layout.fixed.horizontal
-  }
+  vicious.register(
+    wifi_text,
+    vicious.widgets.wifi,
+    '<span color="' .. theme.wifi_widget_text .. '">  ${ssid} ${linp}% </span>',
+    2,
+    "wlo1"
+  )
 
   -- Battery Widget
   local batterytext = wibox.widget.textbox()
   local batterywidget = wibox.container.background(batterytext, theme.battery_widget)
-
-  -- Update battery powerline arrow with background
+  batterywidget = bottom_margin(batterywidget, theme.battery_widget)
   vicious.register(
     batterywidget,
     vicious.widgets.bat,
     function(widget, args)
       if args[1] == '+' then
-        theme.battery_widget = "#006692"
-        batterytext:set_markup(string.format('<span color="%s">   %s%% </span>', "#fff", args[2]))
+        theme.battery_widget = theme.battery_charging
+        batterytext:set_markup(string.format('<span color="%s">   %s%% </span>', theme.battery_charging, args[2]))
       elseif args[2] <= 25 then
-        theme.battery_widget = "#ff5555"
-        batterytext:set_markup(string.format('<span color="%s">   %s%% </span>', barcolor, args[2]))
+        theme.battery_widget = theme.battery_critical
+        batterytext:set_markup(string.format('<span color="%s">   %s%% </span>', theme.battery_critical, args[2]))
       else
-        batterytext:set_markup(string.format('<span color="%s">   %s%% </span>', "#F6FCF2", args[2]))
+        theme.battery_widget = theme.battery_normal
+        batterytext:set_markup(string.format('<span color="%s">   %s%% </span>', theme.battery_normal, args[2]))
       end
-      batterywidget.bg = theme.battery_widget
+      batterywidget.color = theme.battery_widget
       battery_arrow_left.fg = theme.battery_widget
       sound_arrow_left.bg = theme.battery_widget
     end,
@@ -433,13 +390,13 @@ function theme.at_screen_connect(s)
       first,
       wibox.widget.systray(),
       first,
-      wifi_arrow_left,
+      -- wifi_arrow_left,
       wifi_widget,
-      battery_arrow_left,
+      -- battery_arrow_left,
       batterywidget,
-      sound_arrow_left,
-      wibox.container.background(theme.volume.widget, theme.volume_bg),
-      clock_arrow_left,
+      -- sound_arrow_left,
+      volume_widget,
+      -- clock_arrow_left,
       mytextclock,
       layout = wibox.layout.fixed.horizontal,
     },
