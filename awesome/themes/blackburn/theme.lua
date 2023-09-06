@@ -122,9 +122,9 @@ end
 function bottom_margin(widget, margin_color)
   return wibox.widget {
     widget,
-    bottom=2,
-    color=margin_color,
-    widget=wibox.container.margin
+    bottom = 2,
+    color = margin_color,
+    widget = wibox.container.margin
   }
 end
 
@@ -149,6 +149,15 @@ theme.cal = lain.widget.cal({
     bg   = theme.bg_normal
   }
 })
+local month_calendar = awful.widget.calendar_popup.month({
+  opacity = 0.8,
+  bg = "#000",
+  style_focus = {
+    bg_color = theme.fg_focus,
+    fg_color = theme.bg_normal
+  }
+})
+month_calendar:attach(mytextclock, "tr")
 
 -- Battery
 local bat = lain.widget.bat({
@@ -177,7 +186,7 @@ local volume_widget = wibox.container.background(theme.volume.widget, theme.volu
 volume_widget = bottom_margin(volume_widget, theme.volume_text)
 
 -- Separators
-local first     = wibox.widget.textbox('<span font="FiraCode Nerd Font 10"> </span>')
+local first = wibox.widget.textbox('<span font="FiraCode Nerd Font 10"> </span>')
 
 -- Arch Logo
 local try_arch = wibox.widget {
