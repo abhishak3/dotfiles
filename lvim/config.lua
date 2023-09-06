@@ -1,29 +1,15 @@
---[[
-lvim is the global options object
-
-Linters should be
-filled in as strings with either
-a global executable or a path to
-an executable
-]]
--- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
-
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save.enabled = false
 lvim.colorscheme = "pop-punk"
--- lvim.builtin.lualine.options.theme = "gruvbox"
-vim.opt.tabstop = 4                     -- tab space
-vim.cmd [[
-  let g:gruvbox_contrast_dark = "medium"
-  let g:everforest_background = "medium"
-  set relativenumber
-  let g:NERDTreeWinPos = "right"
-]]
+vim.opt.tabstop = 4
+vim.opt.relativenumber = true
+vim.opt.smarttab = true
+vim.opt.smartindent = true
 
 -- vimtex
+vim.g.vimtex_view_method = 'zathura'
 vim.cmd [[
-  let g:vimtex_view_method = 'zathura'
   let g:vimtex_compiler_latexmk = {
     \ 'options' : [
     \   '-pdf',
@@ -36,15 +22,10 @@ vim.cmd [[
     \}
 ]]
 
-lvim.transparent_window = true -- transparency opacity
+lvim.transparent_window = true
 
--- to disable icons and use a minimalist setup, uncomment the following
--- lvim.use_icons = false
-
--- keymappings [view all the defaults by pressing <leader>Lk]
+-- KeyMaps
 lvim.leader = "space"
-
--- Custom KeyMaps
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["|"] = ":vsplit<cr>"
 lvim.keys.normal_mode["_"] = ":split<cr>"
@@ -105,7 +86,7 @@ lvim.lsp.diagnostics.virtual_text = false
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
-lvim.builtin.nvimtree.setup.view.side = "right"
+-- lvim.builtin.nvimtree.setup.view.side = "right"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = true
 
 -- if you don't want all the parsers change this to a table of the ones you want
@@ -135,8 +116,8 @@ lvim.builtin.treesitter.highlight.enable = true
 --     "sumneko_lua",
 --     "jsonls",
 -- }
--- -- change UI setting of `LspInstallInfo`
--- -- see <https://github.com/williamboman/nvim-lsp-installer#default-configuration>
+-- change UI setting of `LspInstallInfo`
+-- see <https://github.com/williamboman/nvim-lsp-installer#default-configuration>
 -- lvim.lsp.installer.setup.ui.check_outdated_servers_on_open = false
 -- lvim.lsp.installer.setup.ui.border = "rounded"
 -- lvim.lsp.installer.setup.ui.keymaps = {
@@ -174,13 +155,12 @@ lvim.builtin.treesitter.highlight.enable = true
 local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
   { command = "black", filetypes = { "python" } },
-  -- { command = "isort", filetypes = { "python" } },
   {
     -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
     command = "prettier",
     ---@usage arguments to pass to the formatter
     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
-    extra_args = { "--print-with", "100" },
+    extra_args = { "--print-width", "100", "--tab-width", "4", "--use-tabs", "false", },
     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
     filetypes = { "typescript", "typescriptreact" },
   },
@@ -189,7 +169,7 @@ formatters.setup {
 -- set additional linters
 local linters = require "lvim.lsp.null-ls.linters"
 linters.setup {
-  -- { command = "flake8", filetypes = { "python" } },
+  { command = "flake8", filetypes = { "python" } },
   {
     -- each linter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
     command = "shellcheck",
