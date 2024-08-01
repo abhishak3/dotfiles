@@ -1,0 +1,24 @@
+function todo() {
+  local default_todo_dir="$HOME/todos/"
+
+  local todo_dir="$default_todo_dir"
+
+  # If TODO_DIR environment variable exists
+  # then use that, otherwise default todo dir will be used
+  if [[ -d $TODO_DIR ]]; then
+    todo_dir=$TODO_DIR
+  fi
+
+  # If todo_dir doesn't exist then make one
+  if [[ ! -d $todo_dir ]]; then
+    mkdir $todo_dir
+  fi
+
+  # Check if a file name was provided
+  if [ -z "$1" ]; then
+    echo "Usage: todo <file_name>[.md]"
+    exit 1
+  fi
+
+  nvim "$TODO_DIR/$1.md"
+}
