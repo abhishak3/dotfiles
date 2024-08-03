@@ -1,24 +1,19 @@
-function todo() {
-  local default_todo_dir="$HOME/todos/"
+#!/bin/bash
 
-  local todo_dir="$default_todo_dir"
+# Define the directory where todo files will be stored
+TODO_DIR="$HOME/todos"
 
-  # If TODO_DIR environment variable exists
-  # then use that, otherwise default todo dir will be used
-  if [[ -d $TODO_DIR ]]; then
-    todo_dir=$TODO_DIR
-  fi
+# Create the directory if it doesn't exist
+mkdir -p "$TODO_DIR"
 
-  # If todo_dir doesn't exist then make one
-  if [[ ! -d $todo_dir ]]; then
-    mkdir $todo_dir
-  fi
+# Check if a filename was provided
+if [ -z "$1" ]; then
+  echo "Usage: todo file_name"
+  exit 1
+fi
 
-  # Check if a file name was provided
-  if [ -z "$1" ]; then
-    echo "Usage: todo <file_name>[.md]"
-    exit 1
-  fi
+# Define the todo file path
+TODO_FILE="$TODO_DIR/$1"
 
-  nvim "$TODO_DIR/$1.md"
-}
+# Open the file with Vim
+nvim "$TODO_FILE"
