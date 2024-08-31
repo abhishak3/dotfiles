@@ -2,6 +2,9 @@ local image_previewer = "chafa"
 
 return {
   "ibhagwan/fzf-lua",
+  keys = {
+    { "<leader>/", "<cmd>FzfLua live_grep_glob<cr>", desc = "Find (Live Grep)" },
+  },
   opts = {
     previewers = {
       builtin = {
