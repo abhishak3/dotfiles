@@ -31,7 +31,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.formatting.prettier" },
     { import = "lazyvim.plugins.extras.editor.fzf" },
     { import = "lazyvim.plugins.extras.editor.leap" },
-    { import = "lazyvim.plugins.extras.coding.codeium" },
+    -- { import = "lazyvim.plugins.extras.coding.codeium" },
     { import = "lazyvim.plugins.extras.coding.mini-surround" },
 
     -- import/override with your plugins
