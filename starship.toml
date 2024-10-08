@@ -45,6 +45,7 @@ $haskell\
 $java\
 $julia\
 $nodejs\
+$python\
 $nim\
 $rust\
 $scala\
@@ -145,6 +146,11 @@ format = '[ $symbol ($version) ]($style)'
 
 [nodejs]
 symbol = ""
+style = "bg:#86BBD8"
+format = '[ $symbol ($version) ]($style)'
+
+[python]
+symbol = ""
 style = "bg:#86BBD8"
 format = '[ $symbol ($version) ]($style)'
 
