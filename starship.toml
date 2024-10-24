@@ -152,7 +152,7 @@ format = '[ $symbol ($version) ]($style)'
 [python]
 symbol = ""
 style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+format = '[ $symbol ($version) (\($virtualenv\)) ]($style)'
 
 [nim]
 symbol = "󰆥 "
