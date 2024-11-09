@@ -6,21 +6,21 @@ return {
     {
       "gpd",
       function()
-        require("goto-preview").goto_preview_definition()
+        require("goto-preview").goto_preview_definition({})
       end,
       desc = "Preview Definition",
     },
     {
       "gpy",
       function()
-        require("goto-preview").goto_preview_type_definition()
+        require("goto-preview").goto_preview_type_definition({})
       end,
       desc = "Preview Definition",
     },
     {
       "gpi",
       function()
-        require("goto-preview").goto_preview_implementation()
+        require("goto-preview").goto_preview_implementation({})
       end,
       desc = "Preview Definition",
     },
